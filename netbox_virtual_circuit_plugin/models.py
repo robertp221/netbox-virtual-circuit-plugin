@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.urls import reverse
 from ipam.models import VLAN
-from extras.models import ChangeLoggedModel
+from netbox.models import ChangeLoggedModel
 
 from .choices import VirtualCircuitStatusChoices
 
@@ -11,12 +11,12 @@ class VirtualCircuit(ChangeLoggedModel):
     """Virtual Circuit model."""
 
     vcid = models.BigIntegerField(
-        primary_key=True,
         verbose_name='ID',
         validators=[
             MaxValueValidator(4294967295),
             MinValueValidator(1),
         ],
+        default='',
     )
     name = models.CharField(
         max_length=64,
