@@ -22,6 +22,7 @@ class VirtualCircuitView(View):
             'vlans': vlans,
         })
 
+
 class VirtualCircuitListView(PermissionRequiredMixin, ObjectListView):
     permission_required = 'netbox_virtual_circuit_plugin.view_virtualcircuit'
     queryset = VirtualCircuit.objects.all()
@@ -29,6 +30,7 @@ class VirtualCircuitListView(PermissionRequiredMixin, ObjectListView):
     filterset_form = VirtualCircuitFilterForm
     table = VirtualCircuitTable
     template_name = 'netbox_virtual_circuit_plugin/virtual_circuit_list.html'
+
 
 class VirtualCircuitCreateView(PermissionRequiredMixin, ObjectEditView):
     permission_required = 'netbox_virtual_circuit_plugin.add_virtualcircuit'
@@ -38,13 +40,46 @@ class VirtualCircuitCreateView(PermissionRequiredMixin, ObjectEditView):
     template_name = 'netbox_virtual_circuit_plugin/virtual_circuit_edit.html'
     default_return_url = 'plugins:netbox_virtual_circuit_plugin:virtual_circuit_list'
 
+
 class VirtualCircuitEditView(VirtualCircuitCreateView):
     permission_required = 'netbox_virtual_circuit_plugin.change_virtualcircuit'
+    default_return_url = 'plugins:netbox_virtual_circuit_plugin:virtual_circuit_list'
+
+    def get_object(self, kwargs):
+        # Look up an existing object by slug or PK, if provided.
+        if 'slug' in kwargs:
+            obj = get_object_or_404(self.queryset, slug=kwargs['slug'])
+        elif 'pk' in kwargs:
+            obj = get_object_or_404(self.queryset, vcid=kwargs['pk'])
+        # Otherwise, return a new instance.
+        else:
+            return self.queryset.model()
+
+        # Take a snapshot of change-logged models
+        if hasattr(obj, 'snapshot'):
+            obj.snapshot()
+
+        return obj
+
 
 class VirtualCircuitDeleteView(PermissionRequiredMixin, ObjectDeleteView):
     permission_required = 'netbox_virtual_circuit_plugin.delete_virtualcircuit'
     queryset = VirtualCircuit.objects.all()
     default_return_url = 'plugins:netbox_virtual_circuit_plugin:virtual_circuit_list'
+
+    def get_object(self, kwargs):
+        # Look up object by slug if one has been provided. Otherwise, use PK.
+        if 'slug' in kwargs:
+            obj = get_object_or_404(self.queryset, slug=kwargs['slug'])
+        else:
+            obj = get_object_or_404(self.queryset, vcid=kwargs['pk'])
+
+        # Take a snapshot of change-logged models
+        if hasattr(obj, 'snapshot'):
+            obj.snapshot()
+
+        return obj
+
 
 class VirtualCircuitBulkDeleteView(PermissionRequiredMixin, BulkDeleteView):
     permission_required = 'netbox_virtual_circuit_plugin.delete_virtualcircuit'
@@ -52,11 +87,13 @@ class VirtualCircuitBulkDeleteView(PermissionRequiredMixin, BulkDeleteView):
     table = VirtualCircuitTable
     default_return_url = 'plugins:netbox_virtual_circuit_plugin:virtual_circuit_list'
 
+
 class VirtualCircuitVLANListView(PermissionRequiredMixin, ObjectListView):
     permission_required = 'netbox_virtual_circuit_plugin.view_virtualcircuitvlan'
     queryset = VirtualCircuitVLAN.objects.all()
     table = VirtualCircuitVLANTable
     template_name = 'netbox_virtual_circuit_plugin/virtual_circuit_vlan_list.html'
+
 
 class VirtualCircuitVLANCreateView(PermissionRequiredMixin, ObjectEditView):
     permission_required = 'netbox_virtual_circuit_plugin.add_virtualcircuitvlan'
@@ -65,6 +102,7 @@ class VirtualCircuitVLANCreateView(PermissionRequiredMixin, ObjectEditView):
     model_form =  VirtualCircuitVLANForm
     template_name = 'netbox_virtual_circuit_plugin/virtual_circuit_vlan_edit.html'
     default_return_url = 'plugins:netbox_virtual_circuit_plugin:virtual_circuit_vlan_list'
+
 
 class VirtualCircuitVLANBulkDeleteView(PermissionRequiredMixin, BulkDeleteView):
     permission_required = 'netbox_virtual_circuit_plugin.delete_virtualcircuitvlan'

@@ -8,12 +8,13 @@ class NestedVCVLANSerializer(ModelSerializer):
         model = VirtualCircuitVLAN
         fields = ['id', 'vlan']
 
+
 class VirtualCircuitSerializer(ModelSerializer):
     vlans = NestedVCVLANSerializer(many=True)
 
     class Meta:
         model = VirtualCircuit
-        fields = ['vcid', 'name', 'status', 'context', 'description', 'vlans', 'created', 'last_updated']
+        fields = ['id', 'vcid', 'name', 'status', 'context', 'description', 'vlans', 'created', 'last_updated']
 
     def create(self, validated_data):
         vlans_data = validated_data.pop('vlans')
@@ -21,6 +22,7 @@ class VirtualCircuitSerializer(ModelSerializer):
         for vlan in vlans_data:
             VirtualCircuitVLAN.objects.create(virtual_circuit=virtual_circuit, **vlan)
         return virtual_circuit
+
 
 class VirtualCircuitVLANSerializer(ModelSerializer):
 

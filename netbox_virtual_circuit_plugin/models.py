@@ -39,12 +39,17 @@ class VirtualCircuit(ChangeLoggedModel):
         ordering = ['vcid']
         verbose_name = 'Virtual Circuit'
         verbose_name_plural = 'Virtual Circuits'
+        constraints = [models.UniqueConstraint(
+                fields=['vcid'],
+                name='unique_vcid'
+        )]
 
     def __str__(self):
         return f'{self.vcid} ({self.name})'
 
     def get_absolute_url(self):
         return reverse('plugins:netbox_virtual_circuit_plugin:virtual_circuit', args=[self.vcid])
+
 
 class VirtualCircuitVLAN(ChangeLoggedModel):
     """Virtual Circuit to VLAN relationship."""
