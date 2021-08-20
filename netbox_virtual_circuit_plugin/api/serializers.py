@@ -14,7 +14,7 @@ class VirtualCircuitSerializer(ModelSerializer):
 
     class Meta:
         model = VirtualCircuit
-        fields = ['id', 'vcid', 'name', 'status', 'context', 'description', 'vlans', 'created', 'last_updated']
+        fields = ['vcid', 'name', 'status', 'context', 'description', 'vlans', 'created', 'last_updated']
 
     def create(self, validated_data):
         vlans_data = validated_data.pop('vlans')

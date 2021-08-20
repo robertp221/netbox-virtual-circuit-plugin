@@ -2,21 +2,22 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.urls import reverse
 from ipam.models import VLAN
-from netbox.models import ChangeLoggedModel
+from utilities.querysets import RestrictedQuerySet
+from netbox.models import ChangeLoggingMixin
 
 from .choices import VirtualCircuitStatusChoices
 
 
-class VirtualCircuit(ChangeLoggedModel):
+class VirtualCircuit(ChangeLoggingMixin):
     """Virtual Circuit model."""
 
     vcid = models.BigIntegerField(
+        primary_key=True,
         verbose_name='ID',
         validators=[
             MaxValueValidator(4294967295),
             MinValueValidator(1),
         ],
-        default='',
     )
     name = models.CharField(
         max_length=64,
@@ -35,14 +36,12 @@ class VirtualCircuit(ChangeLoggedModel):
         blank=True,
     )
 
+    objects = RestrictedQuerySet.as_manager()
+
     class Meta:
         ordering = ['vcid']
         verbose_name = 'Virtual Circuit'
         verbose_name_plural = 'Virtual Circuits'
-        constraints = [models.UniqueConstraint(
-                fields=['vcid'],
-                name='unique_vcid'
-        )]
 
     def __str__(self):
         return f'{self.vcid} ({self.name})'
@@ -51,7 +50,7 @@ class VirtualCircuit(ChangeLoggedModel):
         return reverse('plugins:netbox_virtual_circuit_plugin:virtual_circuit', args=[self.vcid])
 
 
-class VirtualCircuitVLAN(ChangeLoggedModel):
+class VirtualCircuitVLAN(ChangeLoggingMixin):
     """Virtual Circuit to VLAN relationship."""
 
     virtual_circuit = models.ForeignKey(
@@ -71,6 +70,8 @@ class VirtualCircuitVLAN(ChangeLoggedModel):
         ordering = ['virtual_circuit']
         verbose_name = 'Virtual-Circuit-to-VLAN connection'
         verbose_name_plural = 'Virtual-Circuit-to-VLAN connections'
+
+    objects = RestrictedQuerySet.as_manager()
 
     def get_absolute_url(self):
         return reverse('plugins:netbox_virtual_circuit_plugin:virtual_circuit', args=[self.virtual_circuit.vcid])

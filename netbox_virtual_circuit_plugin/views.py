@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.shortcuts import get_object_or_404, get_list_or_404, render
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import View
 from netbox.views.generic import BulkDeleteView, ObjectEditView, ObjectListView, ObjectDeleteView
 
@@ -45,40 +45,11 @@ class VirtualCircuitEditView(VirtualCircuitCreateView):
     permission_required = 'netbox_virtual_circuit_plugin.change_virtualcircuit'
     default_return_url = 'plugins:netbox_virtual_circuit_plugin:virtual_circuit_list'
 
-    def get_object(self, kwargs):
-        # Look up an existing object by slug or PK, if provided.
-        if 'slug' in kwargs:
-            obj = get_object_or_404(self.queryset, slug=kwargs['slug'])
-        elif 'pk' in kwargs:
-            obj = get_object_or_404(self.queryset, vcid=kwargs['pk'])
-        # Otherwise, return a new instance.
-        else:
-            return self.queryset.model()
-
-        # Take a snapshot of change-logged models
-        if hasattr(obj, 'snapshot'):
-            obj.snapshot()
-
-        return obj
-
 
 class VirtualCircuitDeleteView(PermissionRequiredMixin, ObjectDeleteView):
     permission_required = 'netbox_virtual_circuit_plugin.delete_virtualcircuit'
     queryset = VirtualCircuit.objects.all()
     default_return_url = 'plugins:netbox_virtual_circuit_plugin:virtual_circuit_list'
-
-    def get_object(self, kwargs):
-        # Look up object by slug if one has been provided. Otherwise, use PK.
-        if 'slug' in kwargs:
-            obj = get_object_or_404(self.queryset, slug=kwargs['slug'])
-        else:
-            obj = get_object_or_404(self.queryset, vcid=kwargs['pk'])
-
-        # Take a snapshot of change-logged models
-        if hasattr(obj, 'snapshot'):
-            obj.snapshot()
-
-        return obj
 
 
 class VirtualCircuitBulkDeleteView(PermissionRequiredMixin, BulkDeleteView):
