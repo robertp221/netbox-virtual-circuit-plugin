@@ -1,7 +1,7 @@
 import django_filters
 from django.db.models import Q
 
-from utilities.filters import NameSlugSearchFilterSet
+from nautobot.utilities.filters import NameSlugSearchFilterSet
 
 from .models import VirtualCircuit
 

@@ -1,8 +1,8 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.urls import reverse
-from ipam.models import VLAN
-from extras.models import ChangeLoggedModel
+from nautobot.ipam.models import VLAN
+from nautobot.extras.models import ChangeLoggedModel
 
 from .choices import VirtualCircuitStatusChoices
 

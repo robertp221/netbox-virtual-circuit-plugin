@@ -1,6 +1,6 @@
 import django_tables2 as tables
 from django_tables2.utils import Accessor
-from utilities.tables import BaseTable, ToggleColumn
+from nautobot.utilities.tables import BaseTable, ToggleColumn
 
 from .models import VirtualCircuit, VirtualCircuitVLAN
 
