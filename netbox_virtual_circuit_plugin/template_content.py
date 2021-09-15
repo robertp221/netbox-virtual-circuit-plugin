@@ -1,5 +1,5 @@
 from ipam.models import VLAN
-from extras.plugins import PluginTemplateExtension
+from nautobot.extras.plugins import PluginTemplateExtension
 
 from .models import VirtualCircuit, VirtualCircuitVLAN
 

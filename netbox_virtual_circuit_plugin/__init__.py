@@ -1,4 +1,4 @@
-from extras.plugins import PluginConfig
+from nautobot.extras.plugins import PluginConfig
 
 
 class VirtualCircuitConfig(PluginConfig):
