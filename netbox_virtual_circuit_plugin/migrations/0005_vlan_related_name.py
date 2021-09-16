@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ipam', '0037_ipaddress_assignment'),
+#        ('ipam', '0037_ipaddress_assignment'),
         ('netbox_virtual_circuit_plugin', '0004_changelog'),
     ]
 
