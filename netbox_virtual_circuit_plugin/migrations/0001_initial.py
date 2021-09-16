@@ -8,9 +8,9 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ('ipam', '0036_standardize_description'),
-    ]
+#    dependencies = [
+#        ('ipam', '0036_standardize_description'),
+#   ]
 
     operations = [
         migrations.CreateModel(
